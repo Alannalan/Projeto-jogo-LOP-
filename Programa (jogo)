@@ -1,0 +1,79 @@
+//layout
+var pontos = 0
+var vidas = 5
+var dificuldade = 1
+//jogador
+var x= 180
+var y= 350
+//objetos
+var xq=500
+var yq= 65
+//disparo
+var xd=x
+var yd=y
+var estadoDisparo = false
+
+//JOGO
+function setup() {
+  createCanvas(500, 500);
+}
+function draw() {
+  background(0);
+fill(300, 300, 300);
+  textSize(25);
+text('vidas: '+vidas, 10, 30);
+text('pontos: '+pontos,200,30);
+text('Nível: '+dificuldade,400,30);
+
+  //jogador
+    if(keyIsDown(RIGHT_ARROW)){
+      x=x+6
+    }
+  
+    if(keyIsDown(LEFT_ARROW)){
+      x= x -6
+    }
+   
+    if(keyIsDown(UP_ARROW)){
+     y = y - 6
+    }
+    
+    if(keyIsDown(DOWN_ARROW)){
+    y = y + 6
+    }
+  
+  ellipse(x,y,40,40)
+  if(dist(x, y, xq, yq)<45){
+    x=180
+    y=350
+    vidas=vidas-1
+  }
+    
+//objeto
+  ellipse(xq,yq,50,50) 
+  xq= xq -4
+  if(xq<0){
+    xq=600
+  }
+//disparo
+  ellipse(xd,yd,6,6)
+  if(keyIsDown(SHIFT) && estadoDisparo ==false){
+    yd=y
+    xd=x 
+   estadoDisparo = true
+  }
+
+  if(estadoDisparo){
+    ellipse(xd,yd,6,6)
+    yd= yd - 10
+  }
+  if(yd<0){
+    estadoDisparo = false}
+
+  if(dist(xd, yd, xq, yq)<34){
+    estadoDisparo = false
+    xd=x
+    yd=y
+    pontos=pontos+100
+  }
+ }
