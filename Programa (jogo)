@@ -1,79 +1,158 @@
+//telas
+var tela = 0
+var tempo = 0
 //layout
 var pontos = 0
 var vidas = 5
 var dificuldade = 1
 //jogador
-var x= 180
-var y= 350
+var x = 180
+var y = 350
 //objetos
-var xq=500
-var yq= 65
+var xq = 500
+var yq = 65
 //disparo
-var xd=x
-var yd=y
+var xd = 0
+var yd = 0
 var estadoDisparo = false
-
+//niveis
+var barreiradepontos = 1000
+//objetos aleatórios
+var vetorX = []
+var vetorY = []
+var vetorD = []
+var vetorV = []
+var qtdElementos = 10
 //JOGO
 function setup() {
   createCanvas(500, 500);
+  for (i = 0; i < qtdElementos; i++) {
+    vetorX[i] = random(0, 500)
+    vetorY[i] = random(0, 500)
+    vetorD[i] = random(10, 40)
+    vetorV[i] = random(4, 10)
+  }
+
 }
+
 function draw() {
   background(0);
-fill(300, 300, 300);
+  fill(300, 300, 300);
   textSize(25);
-text('vidas: '+vidas, 10, 30);
-text('pontos: '+pontos,200,30);
-text('Nível: '+dificuldade,400,30);
+  text('vidas: ' + vidas, 10, 30);
+  text('pontos: ' + pontos, 200, 30);
+  text('Nível: ' + dificuldade, 400, 30);
+
 
   //jogador
-    if(keyIsDown(RIGHT_ARROW)){
-      x=x+6
-    }
-  
-    if(keyIsDown(LEFT_ARROW)){
-      x= x -6
-    }
-   
-    if(keyIsDown(UP_ARROW)){
-     y = y - 6
-    }
-    
-    if(keyIsDown(DOWN_ARROW)){
+  if (keyIsDown(RIGHT_ARROW)) {
+    x = x + 6
+  }
+
+  if (keyIsDown(LEFT_ARROW)) {
+    x = x - 6
+  }
+
+  if (keyIsDown(UP_ARROW)) {
+    y = y - 6
+  }
+
+  if (keyIsDown(DOWN_ARROW)) {
     y = y + 6
-    }
-  
-  ellipse(x,y,40,40)
-  if(dist(x, y, xq, yq)<45){
-    x=180
-    y=350
-    vidas=vidas-1
-  }
-    
-//objeto
-  ellipse(xq,yq,50,50) 
-  xq= xq -4
-  if(xq<0){
-    xq=600
-  }
-//disparo
-  ellipse(xd,yd,6,6)
-  if(keyIsDown(SHIFT) && estadoDisparo ==false){
-    yd=y
-    xd=x 
-   estadoDisparo = true
   }
 
-  if(estadoDisparo){
-    ellipse(xd,yd,6,6)
-    yd= yd - 10
+  ellipse(x, y, 40, 40)
+  if (dist(x, y, xq, yq) < 45) {
+    x = 180
+    y = 350
+    vidas = vidas - 1
   }
-  if(yd<0){
-    estadoDisparo = false}
 
-  if(dist(xd, yd, xq, yq)<34){
+  //objeto
+  ellipse(xq, yq, 50, 50)
+  xq = xq - 4
+  if (xq < 0) {
+    xq = 600
+  }
+  //disparo
+  ellipse(xd, yd, 6, 6)
+  if (keyIsDown(SHIFT) && estadoDisparo == false) {
+    yd = y
+    xd = x
+    estadoDisparo = true
+  }
+
+  if (estadoDisparo) {
+    ellipse(xd, yd, 6, 6)
+    yd = yd - 10
+  }
+  if (yd < 0) {
     estadoDisparo = false
-    xd=x
-    yd=y
-    pontos=pontos+100
   }
- }
+
+  if (dist(xd, yd, xq, yq) < 34) {
+    estadoDisparo = false
+    xd = x
+    yd = y
+    pontos = pontos + 100
+  }
+
+  //objetos aleatórios
+  for (i = 0; i < qtdElementos; i++) {
+    vetorY[i] = vetorY[i] + vetorV[i]
+    ellipse(vetorX[i], vetorY[i], vetorD[i], vetorD[i])
+    if(dificuldade == 1){
+      vetorY[i] = vetorY[i] + vetorV[i]
+    if (vetorY[i] > 500) {
+      vetorY[i] = random(-400, -100)
+    }
+  }
+    else if(dificuldade == 2){
+      vetorY[i] = vetorY[i] + 1.2*vetorV[i]
+      if(vetorY[i]>500)
+        vetorY[i] = random(-500,0)
+    }
+  }
+
+  //niveis
+  if (pontos > barreiradepontos) {
+    dificuldade++
+    barreiradepontos = barreiradepontos + 1000
+    //n to conseguindo fzr o objt
+    //ellipse(xd1,yd1,30,30)
+    //xd1=xd1-10
+  } else if (pontos > 5000) {
+    tela = 3
+  } else if (vidas < 1) {
+    tela = 4
+  }
+
+
+  if (tela == 3) {
+    background(0);
+    textSize(40);
+    fill(300, 0, 0)
+    text('YOU WIN!!', 50, 250);
+    text('demorasse em', 30, 350);
+  }
+
+  if (tela == 4) {
+    background(0);
+    textSize(30);
+    fill(150, 245, 64);
+    text('Hoje', 75, 100)
+    text('pra', 75, 150)
+    text('você', 75, 200)
+    text('é', 75, 250)
+    text('zero!!', 75, 300)
+  }
+  //colisões com objetos
+
+  for(i=0; i<qtdElementos; i++){
+    if(dist(x, y, vetorX[i], vetorY[i])<vetorD[i]/2+20){
+      vetorX[i] = random(0,500)
+      vetorY[i] = random(-500,0)
+      vidas = vidas - 1
+    }
+  }
+}
